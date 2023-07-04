@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y ca-certificates
 # Build for builder
 WORKDIR /opt/
 COPY lib/ lib/
-COPY server/ server/
+COPY anisette_server/ anisette_server/
 COPY dub.sdl dub.selections.json ./
 RUN dub build -c "static" --build-mode allAtOnce -b release --compiler=ldc2 :anisette-server
 
@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y ca-certificates
 
 # Copy build artefacts to run
 WORKDIR /opt/
-COPY --from=builder /opt/bin/provision_anisette-server /opt/server
+COPY --from=builder /opt/bin/provision_anisette-server /opt/anisette_server
 
 # Setup rootless user which works with the volume mount
 RUN useradd -ms /bin/bash Chester \
@@ -33,4 +33,4 @@ RUN useradd -ms /bin/bash Chester \
 # Run the artefact
 USER Chester
 EXPOSE 6969
-ENTRYPOINT [ "/opt/server", "-r=true" ]
+ENTRYPOINT [ "/opt/anisette_server", "-r=true" ]
